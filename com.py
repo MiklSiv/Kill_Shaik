@@ -62,7 +62,7 @@ class Ui_MainWindow(object):
 
     def der(self):
         text = self.infa.readline()
-        e = text.decode('utf-8')
+        #e = text.decode('utf-8')
 
         self.vivod.setText(str(text))
 
@@ -74,6 +74,7 @@ class Ui_MainWindow(object):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
         self.bt_COM.setText(_translate("MainWindow", "подключение COM порта"))
+        #self.bt_COM2.setText(_translate("MainWindow", "отключение COM порта"))
         self.bt_read.setText(_translate("MainWindow", "READ"))
         self.bt_write.setText(_translate("MainWindow", "WRITE"))
 
