@@ -30,7 +30,7 @@ class Ui_MainWindow(object):
         self.bt_write.setGeometry(QtCore.QRect(230, 90, 101, 41))
         self.bt_write.setStyleSheet("background-color: rgb(85, 255, 255);")
         self.bt_write.setObjectName("bt_write")
-        self.vivod = QtWidgets.QTextBrowser(self.centralwidget)
+        self.vivod = QtWidgets.QLabel(self.centralwidget)
         self.vivod.setGeometry(QtCore.QRect(360, 30, 421, 41))
         self.vivod.setObjectName("vivod")
         self.vvod = QtWidgets.QTextEdit(self.centralwidget)
@@ -41,12 +41,13 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
-        self.port()
 
-        self.read()
+        self.fun()
 
-    def port(self):
+    def fun(self):
         self.bt_COM.clicked.connect(lambda: self.serial_port())
+        self.bt_read.clicked.connect(lambda: self.get())
+        self.bt_write.clicked.connect(lambda: self.send())
 
     def serial_port(self):
         port = 'COM%d' %4
@@ -57,14 +58,13 @@ class Ui_MainWindow(object):
         except (OSError, serial.SerialException):
             pass
 
-    def read(self):
-        self.bt_read.clicked.connect(lambda: self.der())
-
-    def der(self):
+    def get(self):
         text = self.infa.readline()
-        #e = text.decode('utf-8')
+        self.vivod.setText(text.decode('utf-8'))
 
-        self.vivod.setText(str(text))
+    def send(self):
+        text = self.infa.readline()
+        self.vivod.setText(text.decode('utf-8'))
 
 
 
