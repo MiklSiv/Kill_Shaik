@@ -3,7 +3,7 @@ import socket
 import threading
 
 
-SERVER_ADDRESS = ('localhost', 8686)
+SERVER_ADDRESS = ('localhost', 5000)
 
 # Настраиваем сокет
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -49,11 +49,8 @@ def send():
 
 vvod = threading.Thread(target=read)
 vivod = threading.Thread(target=send)
-#end = threading.Thread(target=close_connecthion())
 
 vvod.start()
 vivod.start()
 vivod.join()
 vvod.join()
-
-print ('end')

@@ -1,3 +1,7 @@
+# графический интерфейс подключения сервера
+# есть отправка и прем сообщений
+
+
 from PyQt5 import QtCore, QtGui, QtWidgets
 import sys
 import socket

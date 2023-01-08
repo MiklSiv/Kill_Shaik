@@ -1,15 +1,19 @@
+import time
 
-def grafic_online():
+
+def graf(x_graf, y_graf):
     import matplotlib.pyplot as plt
     import matplotlib.animation as animathion
 
     fig = plt.figure()
     ax = fig.add_subplot(1, 1, 1)
-
     def animate(i):
-        global x_graf, y_graf
+        #global  x_graf, y_graf
         ax.clear()
-        ax.plot(x_graf, y_graf)
+
+        x = x_graf
+        y = y_graf
+        ax.plot(x, y)
 
         plt.xlabel("time")
         plt.ylabel("num")
@@ -17,8 +21,4 @@ def grafic_online():
 
     ani = animathion.FuncAnimation(fig, animate, interval=1000)
     plt.show()
-
-
-
-
-grafic_online()
+    time.sleep(2)

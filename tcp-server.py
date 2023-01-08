@@ -1,8 +1,11 @@
+'''  сервер запускается, при активном клиенте появляется связь.
+Сервер поучает сообщения, при любом инпуте отправляет на клиент остановку и рубит связь'''
+
 import time
 import socket
 import threading
-import  sqlite3 as sq
-import grafik
+import sqlite3 as sq
+import animathion
 
 SERVER_ADDRESS = ('localhost', 8686)
 
@@ -24,10 +27,6 @@ y_graf = []
 
 def read():
     global x_graf, y_graf
-
-    x_graf = []
-    y_graf = []
-
     while True:
         if Q == False:
             client.send('server close'.encode('utf-8'))
@@ -51,33 +50,14 @@ def close_connecthion():
     input()
     Q = False
 
-def grafic_online():
-    import matplotlib.pyplot as plt
-    import matplotlib.animation as animathion
-    print (211)
 
-    fig = plt.figure()
-    ax = fig.add_subplot(1, 1, 1)
-
-    def animate(i):
-        #global x_graf, y_graf
-        x_graf = [1, 2, 3, 4, 5]
-        y_graf = [10, 15, 10,20, 25]
-        ax.clear()
-        ax.plot(x_graf, y_graf)
-
-        plt.xlabel("time")
-        plt.ylabel("num")
-        plt.title('grafic')
-
-    ani = animathion.FuncAnimation(fig, animate, interval=1000)
-    plt.show()
 
 vvod = threading.Thread(target=read)
 end = threading.Thread(target=close_connecthion)
-graf = threading.Thread(target=grafik.grafic_online)
+
 
 vvod.start()
-graf.start()
+
+animathion.graf(x_graf, y_graf)
 end.start()
-#time.sleep(5)
+
