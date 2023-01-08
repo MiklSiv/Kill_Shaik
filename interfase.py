@@ -20,7 +20,7 @@ speeds = ['1200','2400', '4800', '9600', '19200', '38400', '57600', '115200']
 class LedApp(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
-        #self.setup(self)
+        self.setup(self)
         self.Port.addItems(serial_ports())
         self.Speed.addItems(speeds)
         self.realport = None
