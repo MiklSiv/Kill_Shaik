@@ -1,8 +1,7 @@
 import serial
-
-def cikl(port="COM4"):
-    text = "0"
-    count = 0
+text = '6'
+port = "COM4"
+def cikl(port):
     with serial.Serial(port) as ser:
         print(ser.readline().decode('utf-8'))
         while True:
@@ -11,7 +10,5 @@ def cikl(port="COM4"):
                 print(ser.readline().decode('utf-8'))
             except:
                 pass
-            count += 1
-            text = str(count)
 
-cikl()
+
