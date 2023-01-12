@@ -1,4 +1,6 @@
-import time
+#  интерфейс прохождение сигнала клиент -> сервер -> com порт -> ардуино
+#
+
 import socket
 import sqlite3 as sql
 import threading
@@ -20,11 +22,12 @@ class Server():
         self.client.send('Hello client'.encode('UTF-8'))
         print("new connection from {address}".format(address=self.address))
         self.flag = True
+
     def read(self):
         conn = sql.connect('example.db')
         cursor = conn.cursor()
         while self.flag:
-            global text
+
             try:
                 data = self.client.recv(1024)
                 text = data.decode('utf-8')
@@ -86,4 +89,4 @@ def serv():
 com_port = threading.Thread(target=cikl)
 servtr_vkl = threading.Thread(target=serv)
 com_port.start()
-servtr_vkl.start()
+#servtr_vkl.start()
