@@ -1,15 +1,22 @@
 import time
 import socket
 import threading
+import  serial
 
 
 
 
-class Connecthion_my():
+class Connecthion_client():
     def __init__(self, client, address):
         self.client, self.address = client, address
         self.client.send('Hello client'.encode('UTF-8'))
         print(f"new connection from {address}")
+
+        self.com_port = self.client.recv(1024).decode('utf-8')
+
+        self.ser = serial.Serial(self.com_port)
+        print(self.ser.readline().decode('utf-8'))
+        self.client.send(f"port {self.com_port} vkl".encode('UTF-8'))
         self.flag = True
 
 
@@ -17,31 +24,26 @@ class Connecthion_my():
         while self.flag:
             try:
                 data = self.client.recv(1024)
-                print (data.decode('utf-8'))
-            except:
-                pass
-            time.sleep(1)
-    def send(self):
-        while self.flag:
-            try:
-                vvod = input()
-                if vvod == 'close':
-                    self.client.send('server close'.encode('utf-8'))
+                if  data.decode('utf-8') == 'close':
+                    self.client.send('connecthione close'.encode('utf-8'))
                     self.client.close()
-                    print('server close')
+                    self.ser.close()
+                    print(f'Connecthion  client {self.address} close ')
                     self.flag = False
-                    break
+
                 else:
-                    self.client.send(vvod.encode('utf-8'))
+                    print (data.decode('utf-8'))
+                    self.ser.write(data)
+                    out = self.ser.readline()
+                    self.client.send(out)
             except:
                 pass
             time.sleep(1)
 
+
     def active(self):
         vvod = threading.Thread(target=self.read)
-        vivod = threading.Thread(target=self.send)
         vvod.start()
-        vivod.start()
 
 
 def server():
@@ -52,16 +54,15 @@ def server():
     server.listen(10)
     print('server is running, please, press ctrl+c to stop')
 
-    count = 0
-    Spisok_client = [{'client' + str(count): 0}]
+
+    Spisok_client = []
 
     while True:
         try:
             client, address = server.accept()
-            Spisok_client[count] = Connecthion_my(client, address)
-            Spisok_client[count].active()
-            count += 1
-            Spisok_client.append('client' + str(count))
+            Spisok_client.append( Connecthion_client(client, address))
+            Spisok_client[-1].active()
+
         except:
             break
 
