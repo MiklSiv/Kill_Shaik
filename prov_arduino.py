@@ -1,19 +1,16 @@
+import time
+
 import serial
 
-text = '6'
-def connecth(port):
-    try:
-        ser = serial.Serial(port)
-        print(ser.readline().decode('utf-8'))
-    except (OSError, serial.SerialException):
-        pass
+text = "HELLO"
+
+ser = serial.Serial("COM4", timeout=3)
+if ser.isOpen():
+    ser.write(text.encode('utf-8'))
+    print('write')
+    print(ser.readline().decode('utf-8'))
 
 
-
-    while True:
-        try:
-        ser.write(text.encode('utf-8'))
-        print(ser.readline().decode('utf-8'))
 
 
 

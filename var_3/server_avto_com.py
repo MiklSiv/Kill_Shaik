@@ -126,11 +126,11 @@ class Ui_MainWindow(object):
             self.comboBox_2.addItem("")
             self.comboBox_2.addItem("")
             self.comboBox_2.addItem("")
-            self.comboBox.setItemText(0, "power 1")
-            self.comboBox.setItemText(1, "power 2")
-            self.comboBox.setItemText(2, "power 3")
-            self.comboBox.setItemText(3, "power 4")
-            self.comboBox.setItemText(4, "arduino")
+            self.comboBox.setItemText(0, "power1")
+            self.comboBox.setItemText(1, "power2")
+            self.comboBox.setItemText(2, "power3")
+            self.comboBox.setItemText(3, "arduino1")
+            self.comboBox.setItemText(4, "arduino2")
             self.comboBox_2.setItemText(0, "9600")
             self.comboBox_2.setItemText(1, "19200")
             self.comboBox_2.setItemText(2, "115200")
@@ -146,21 +146,17 @@ class Ui_MainWindow(object):
         def com_port(self, com):
 
             if com != "close":
-                self.ser = serial.Serial("COM" + str(com)) # полключается сом порт по номеру из ввода
+                self.ser = serial.Serial("COM" + str(com), timeout=2) # полключается сом порт по номеру из ввода
                 self.name_comport = self.comboBox.currentText()
                 if self.ser.isOpen():
                     self.bt_on_com.setText("OPEN")
+                    self.ser.write("HELLO".encode('utf-8'))# снести на основном проекте
                     print(f"abonent {self.name_comport} -- ", self.ser.readline().decode('utf-8')) #чтение ответа из ардуино
                     self.bt_off_com.setText("OFF")
-
                     connections.COM_FlAG[self.name_comport] = [True, 'open', self.ser]
 
-                    #connecthions.COM_FlAG[self.name_comport][2] = connecthions.сomport_potok(self.ser)
-                    #daw = threading.Thread(target=cikl_com_port.cikl, args = (self.ser, self.name_comport))
-                    #daw.start()
 
             else:
-                connections.COM_FlAG[self.name_comport] = False
                 time.sleep(2)
                 self.ser.close()
                 self.bt_on_com.setText("ON")
