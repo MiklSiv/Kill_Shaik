@@ -2,11 +2,11 @@ import time
 
 import serial
 
-text = "HELLO"
+text = "DFGH"
 
-ser = serial.Serial("COM4", timeout=3)
+ser = serial.Serial("COM3", timeout = 5)
 if ser.isOpen():
-    ser.write(text.encode('utf-8'))
+    ser.write(text.encode())
     print('write')
     print(ser.readline().decode('utf-8'))
 
