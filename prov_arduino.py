@@ -16,15 +16,15 @@ def com_er():
     ser = serial.Serial("COM5", timeout=3)
     count = 1
     while True:
-
         if ser.isOpen():
-            if count == 10:
+            if ser.read().decode('utf-8') == 'U':
+                ask = "U" + ser.read(size = 5).decode('utf-8')
+                print (1,  ask)
                 break
-            elif ser.read().decode('utf-8') == 'U':
-               count += 1
-               print(f' {count}   {ser.read(size=5).decode()}' )
             else:
                pass
+    while True:
+        print(ser.read(size = 6).decode('utf-8'))
 
 
 
