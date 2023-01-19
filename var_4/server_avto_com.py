@@ -137,6 +137,7 @@ class Ui_MainWindow(object):
             self.botton()
             self.ser = ''
             self.name_comport = ''
+            self.com_flag = False
 
         def botton(self):
             self.bt_on_com.clicked.connect(lambda: self.com_port(self.com_text.toPlainText()))
@@ -145,7 +146,11 @@ class Ui_MainWindow(object):
 
         def com_port(self, com):
 
-            if com != "close":
+            if self.com_flag:
+                print(self.com_flag)
+
+
+            elif com != "close":
                 self.ser = serial.Serial("COM" + str(com), timeout=3) # полключается сом порт по номеру из ввода
                 self.name_comport = self.comboBox.currentText()
                 if self.ser.isOpen():
@@ -156,10 +161,13 @@ class Ui_MainWindow(object):
                     connections.COM_FlAG[self.name_comport] = ['open', self.ser]
 
             else:
+                self.com_flag = True
+                print (self.com_flag)
                 time.sleep(2)
                 self.ser.close()
                 self.bt_on_com.setText("ON")
                 self.bt_off_com.setText("CLOSE")
+
 
 
 def app(): # графический интерфей

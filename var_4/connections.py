@@ -12,7 +12,9 @@ COM_FlAG = {"arduino1" : ["close", 'ser'],
 
 SERVER_FLAG = True
 
-def client_to_com(client):
+# управление обращением к сом портам
+
+def client_to_com(client): #разовое обращение к портам
         try:
             data = client.recv(1024).decode('utf-8').split()  # спиок входных данных типа [x, y]: x - имя сом порта, у - команда для компорта
             if len(data) != 2:
@@ -44,17 +46,19 @@ def client_to_com(client):
         except:
             pass
 
+def loop(ser): # обращение к порту с зацикливанием
 
-server = ''
-
-def loop(ser):
     if ser.isOpen():
         ser.write("text".encode())
         print(ser.readline().decode('utf-8'))
 
 
+# блок управления сервером
+
+server = ''
 def server_on(): # включение сервера
     global server
+    Spisok_client = [False] * 1000
     SERVER_ADDRESS = ('localhost', 5000)
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server.bind(SERVER_ADDRESS)
@@ -63,12 +67,16 @@ def server_on(): # включение сервера
     while SERVER_FLAG:  # сканер появления клиентов. отправка сообщения в сом порт и обратно
         try:
             client, address = server.accept()
-            client_to_com(client)
+            for i in Spisok_client:
+                if i == False:
+                    i = threading.Thread(target=client_to_com, args = (client, ))
+                    i.start()
+                    break
         except:
             print('ex_server')
 
 
-def server_off():
+def server_off(): #отключение сервера
     global SERVER_FLAG
     SERVER_FLAG = False
     server.close()
