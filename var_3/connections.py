@@ -27,14 +27,17 @@ class Connection_client():
                 if data[0] == 'close':
                     self.client.send('connection close'.encode('utf-8'))
                     self.client.close()
+                    self.client = 'close'
                     print(f'connection  client {self.address} close ')
                     self.flag = False
                     break
+
                 elif len(data) != 2:
                     self.client.send('<ASK_error - bad struct massage>'.encode('utf-8'))
-                    print (data) # снести на проекте
+
                 elif data[0] not in COM_FlAG:
                     self.client.send('<ASK_error - NULL COM_abonent>'.encode('utf-8'))
+
                 else:
                     while COM_FlAG[data[0]][1] == 'close':
                         time.sleep(0.1)
@@ -60,6 +63,7 @@ class Connection_client():
         self.client.close()
         print(f'connection  client {self.address} close ')
         self.flag = False  # смена для отключения соединения
+
     def сomport_potok(self, ser, text, loop=False):
         if loop == False:
             try:
@@ -75,6 +79,9 @@ class Connection_client():
                 except:
                     pass
                 time.sleep(2)'''
+    def close_client(self):
+        self.client.send('connection close'.encode('utf-8'))
+        self.client.close()
 
     def active(self):
         vvod = threading.Thread(target=self.read)
@@ -104,8 +111,14 @@ def server_on(): # включение сервера
 
 def server_off():
     global server, Spisok_client
-    for i in Spisok_client:
-        i.send()
+    for i in range(len(Spisok_client)):
+        if Spisok_client[i].client != 'close':
+            Spisok_client[i].close_client()
+
+            print(Spisok_client[i].client)
+        else:
+            print(Spisok_client[i].client)
+
     server.close()
     print ('<<< server OFF >>>')
 

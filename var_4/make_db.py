@@ -4,7 +4,8 @@ import time
 conn = sqlite3.connect('data_base.db')
 cursor = conn.cursor()
 
-cursor.execute('''CREATE TABLE arduino (time real, in_com text, out_com text)''')
+cursor.execute('''CREATE TABLE arduino2 (time real, in_com text, out_com text)''')
+#cursor.execute('''DROP TABLE arduino''')
 #for i in range(10):
     #cursor.execute(f'''INSERT INTO arduino(id, time, date) VALUES ({i}, {time.time()}, 'text');''')
 

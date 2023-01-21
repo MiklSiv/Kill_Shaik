@@ -6,6 +6,10 @@ from var_4 import connections
 import threading
 
 
+
+
+
+
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -34,29 +38,43 @@ class Ui_MainWindow(object):
         self.bt_off_server.setObjectName("bt_off_server")
         self.bt_off_server.setText("OFF")
 
-        self.com1 = self.Connection(self.centralwidget, 0)
-        self.com2 = self.Connection(self.centralwidget, 50)
-        self.com3 = self.Connection(self.centralwidget, 100)
-        self.com4 = self.Connection(self.centralwidget, 150)
-        self.com5 = self.Connection(self.centralwidget, 200)
-        self.com6 = self.Connection(self.centralwidget, 250)
-        self.com7 = self.Connection(self.centralwidget, 300)
-        self.com8 = self.Connection(self.centralwidget, 350)
-        self.com9 = self.Connection(self.centralwidget, 400)
-        self.com10 = self.Connection(self.centralwidget, 450)
-        self.com11 = self.Connection(self.centralwidget, 500)
-        self.com12 = self.Connection(self.centralwidget, 550)
-        self.com13 = self.Connection(self.centralwidget, 600)
-        self.com14 = self.Connection(self.centralwidget, 650)
-        self.com15 = self.Connection(self.centralwidget, 700)
-        self.com16 = self.Connection(self.centralwidget, 750)
+        self.label_config = QtWidgets.QLabel(self.centralwidget)
+        self.label_config.setGeometry(QtCore.QRect(650, 90, 80, 21))
+        self.label_config.setObjectName("label_config")
+        self.label_config.setText("Start config")
+
+        self.bt_config = QtWidgets.QPushButton(self.centralwidget)
+        self.bt_config.setGeometry(QtCore.QRect(650, 120, 61, 20))
+        self.bt_config.setStyleSheet("background-color: rgb(255, 255, 255);\n"
+                                     "background-color: rgb(0, 255, 127);")
+        self.bt_config.setObjectName("bt_config")
+        self.bt_config.setText("Start")
+
         self.botton_serv()
+
+        self.Spisok_com = [] # список экземпляров класса Connection
+        self.Spisok_com.append(self.Connection(self.centralwidget, 'arduino1', 0))
+        self.Spisok_com.append(self.Connection(self.centralwidget, 'arduino2', 50))
+        self.Spisok_com.append(self.Connection(self.centralwidget, 'power1', 100))
+
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
         MainWindow.setCentralWidget(self.centralwidget)
 
     def botton_serv(self):
         self.bt_on_server.clicked.connect(lambda: self.server_power('onn'))
         self.bt_off_server.clicked.connect(lambda: self.server_power('off'))
+        self.bt_config.clicked.connect(lambda: self.com_start())
+
+
+    def com_start(self):
+        if connections.com_config():
+            for i in self.Spisok_com:
+                try:
+                    i.com_port(connections.COM_config[i.name_comport])
+                    i.com_text.setText(connections.COM_config[i.name_comport])
+                except:
+                    pass
+
 
     def server_power(self, vvod = 'on'):
         if vvod != "off":
@@ -72,22 +90,30 @@ class Ui_MainWindow(object):
 
 
     class Connection():
-        def __init__(self, centralwidget, n):
+        def __init__(self, centralwidget, name_comport, n):
             self.centralwidget = centralwidget
+            self.name_comport = name_comport
 
             self.bt_on_com = QtWidgets.QPushButton(self.centralwidget)
-            self.bt_on_com.setGeometry(QtCore.QRect(360, 45 + n, 61, 20))
+            self.bt_on_com.setGeometry(QtCore.QRect(330, 45 + n, 61, 20))
             self.bt_on_com.setStyleSheet("background-color: rgb(255, 255, 255);\n"
                                          "background-color: rgb(0, 255, 127);")
             self.bt_on_com.setObjectName("bt_on_com")
             self.bt_on_com.setText("ON")
 
             self.bt_off_com = QtWidgets.QPushButton(self.centralwidget)
-            self.bt_off_com.setGeometry(QtCore.QRect(450, 45 + n, 61, 20))
+            self.bt_off_com.setGeometry(QtCore.QRect(430, 45 + n, 61, 20))
             self.bt_off_com.setStyleSheet("background-color: rgb(255, 255, 127);\n"
                                           "")
             self.bt_off_com.setObjectName("bt_off_com")
             self.bt_off_com.setText("OFF")
+
+            self.bt_loop = QtWidgets.QPushButton(self.centralwidget)
+            self.bt_loop.setGeometry(QtCore.QRect(530, 45 + n, 61, 20))
+            self.bt_loop.setStyleSheet("background-color: rgb(255, 255, 127);\n"
+                                          "")
+            self.bt_loop.setObjectName("bt_off_com")
+            self.bt_loop.setText("LOOP")
 
             self.com_text = QtWidgets.QTextEdit(self.centralwidget)
             self.com_text.setGeometry(QtCore.QRect(60, 45 + n, 40, 20))
@@ -95,6 +121,14 @@ class Ui_MainWindow(object):
             font.setPointSize(7)
             self.com_text.setFont(font)
             self.com_text.setObjectName("textEdit_2")
+
+            self.com_name = QtWidgets.QLabel(self.centralwidget)
+            self.com_name.setGeometry(QtCore.QRect(249, 45 + n, 81, 22))
+            font = QtGui.QFont()
+            font.setPointSize(7)
+            self.com_name.setFont(font)
+            self.com_name.setObjectName("textEdit_2")
+            self.com_name.setText(self.name_comport)
 
             self.label = QtWidgets.QLabel(self.centralwidget)
             self.label.setGeometry(QtCore.QRect(170, 20 + n, 41, 21))
@@ -106,67 +140,38 @@ class Ui_MainWindow(object):
             self.label_2.setObjectName("label_2")
             self.label_2.setText("№ COM")
 
-            self.checkBox = QtWidgets.QCheckBox(self.centralwidget)
-            self.checkBox.setGeometry(QtCore.QRect(550, 45 + n, 61, 31))
-            self.checkBox.setObjectName("checkBox")
-            self.checkBox.setText("LOOP")
-
-
-            self.comboBox = QtWidgets.QComboBox(self.centralwidget)
-            self.comboBox.setGeometry(QtCore.QRect(249, 45 + n, 81, 22))
-            self.comboBox.setObjectName("comboBox")
-            self.comboBox.addItem("")
-            self.comboBox.addItem("")
-            self.comboBox.addItem("")
-            self.comboBox.addItem("")
-            self.comboBox.addItem("")
             self.comboBox_2 = QtWidgets.QComboBox(self.centralwidget)
             self.comboBox_2.setGeometry(QtCore.QRect(160, 45 + n, 60, 22))
             self.comboBox_2.setObjectName("comboBox_2")
             self.comboBox_2.addItem("")
             self.comboBox_2.addItem("")
             self.comboBox_2.addItem("")
-            self.comboBox.setItemText(0, "power1")
-            self.comboBox.setItemText(1, "power2")
-            self.comboBox.setItemText(2, "power3")
-            self.comboBox.setItemText(3, "arduino1")
-            self.comboBox.setItemText(4, "arduino2")
             self.comboBox_2.setItemText(0, "9600")
             self.comboBox_2.setItemText(1, "19200")
             self.comboBox_2.setItemText(2, "115200")
             self.botton()
             self.ser = ''
-            self.name_comport = ''
-            self.com_flag = False
 
         def botton(self):
             self.bt_on_com.clicked.connect(lambda: self.com_port(self.com_text.toPlainText()))
             self.bt_off_com.clicked.connect(lambda: self.com_port('close'))
-
+            self.bt_loop.clicked.connect(lambda: connections.loop(connections.COM_FlAG[self.name_comport][1], self.name_comport))
 
         def com_port(self, com):
-
-            if self.com_flag:
-                print(self.com_flag)
-
-
-            elif com != "close":
+            if com != "close":
                 self.ser = serial.Serial("COM" + str(com), timeout=3) # полключается сом порт по номеру из ввода
-                self.name_comport = self.comboBox.currentText()
                 if self.ser.isOpen():
                     self.bt_on_com.setText("OPEN")
-                    self.ser.write("HELLO".encode('utf-8'))# снести на основном проекте
-                    print(f"abonent {self.name_comport} -- ", self.ser.readline().decode('utf-8')) #чтение ответа из ардуино
                     self.bt_off_com.setText("OFF")
                     connections.COM_FlAG[self.name_comport] = ['open', self.ser]
 
             else:
-                self.com_flag = True
-                print (self.com_flag)
+                connections.COM_FlAG[self.name_comport][0] = False
                 time.sleep(2)
                 self.ser.close()
                 self.bt_on_com.setText("ON")
                 self.bt_off_com.setText("CLOSE")
+
 
 
 

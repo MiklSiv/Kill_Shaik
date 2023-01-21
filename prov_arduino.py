@@ -15,16 +15,20 @@ def com_ty():
 def com_er():
     ser = serial.Serial("COM5", timeout=3)
     count = 1
-    while True:
+    Flag = True
+    while Flag:
         if ser.isOpen():
             if ser.read().decode('utf-8') == 'U':
-                ask = "U" + ser.read(size = 5).decode('utf-8')
-                print (1,  ask)
-                break
+                ask = "U" + ser.read(size = 31).decode('utf-8')
+                print (count,  ask)
+                count +=1
+                if count == 5:
+                    Flag = False
             else:
                pass
-    while True:
-        print(ser.read(size = 6).decode('utf-8'))
+
+
+
 
 
 

@@ -2,7 +2,7 @@ import time
 import sys
 import serial
 from PyQt5 import QtCore, QtGui, QtWidgets
-from var_4 import connections
+import connections # модуль с классами клиентов, с классами сом портов
 import threading
 
 
@@ -16,7 +16,7 @@ class Ui_MainWindow(object):
         self.centralwidget.setObjectName("centralwidget")
 
         self.label_server = QtWidgets.QLabel(self.centralwidget)
-        self.label_server.setGeometry(QtCore.QRect(650, 20, 41, 21))
+        self.label_server.setGeometry(QtCore.QRect(650, 20, 90, 21))
         self.label_server.setObjectName("label")
         self.label_server.setText("Server activaithion")
 
@@ -34,22 +34,23 @@ class Ui_MainWindow(object):
         self.bt_off_server.setObjectName("bt_off_server")
         self.bt_off_server.setText("OFF")
 
-        self.com1 = self.Connection(self.centralwidget, 0)
-        self.com2 = self.Connection(self.centralwidget, 50)
-        self.com3 = self.Connection(self.centralwidget, 100)
-        self.com4 = self.Connection(self.centralwidget, 150)
-        self.com5 = self.Connection(self.centralwidget, 200)
-        self.com6 = self.Connection(self.centralwidget, 250)
-        self.com7 = self.Connection(self.centralwidget, 300)
-        self.com8 = self.Connection(self.centralwidget, 350)
-        self.com9 = self.Connection(self.centralwidget, 400)
-        self.com10 = self.Connection(self.centralwidget, 450)
-        self.com11 = self.Connection(self.centralwidget, 500)
-        self.com12 = self.Connection(self.centralwidget, 550)
-        self.com13 = self.Connection(self.centralwidget, 600)
-        self.com14 = self.Connection(self.centralwidget, 650)
-        self.com15 = self.Connection(self.centralwidget, 700)
-        self.com16 = self.Connection(self.centralwidget, 750)
+
+        self.com1 = self.Connecthion(self.centralwidget, 0)
+        self.com2 = self.Connecthion(self.centralwidget, 50)
+        self.com3 = self.Connecthion(self.centralwidget, 100)
+        self.com4 = self.Connecthion(self.centralwidget, 150)
+        self.com5 = self.Connecthion(self.centralwidget, 200)
+        self.com6 = self.Connecthion(self.centralwidget, 250)
+        self.com7 = self.Connecthion(self.centralwidget, 300)
+        self.com8 = self.Connecthion(self.centralwidget, 350)
+        self.com9 = self.Connecthion(self.centralwidget, 400)
+        self.com10 = self.Connecthion(self.centralwidget, 450)
+        self.com11 = self.Connecthion(self.centralwidget, 500)
+        self.com12 = self.Connecthion(self.centralwidget, 550)
+        self.com13 = self.Connecthion(self.centralwidget, 600)
+        self.com14 = self.Connecthion(self.centralwidget, 650)
+        self.com15 = self.Connecthion(self.centralwidget, 700)
+        self.com16 = self.Connecthion(self.centralwidget, 750)
         self.botton_serv()
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
         MainWindow.setCentralWidget(self.centralwidget)
@@ -71,7 +72,7 @@ class Ui_MainWindow(object):
             self.bt_off_server.setText("CLOSE")
 
 
-    class Connection():
+    class Connecthion():
         def __init__(self, centralwidget, n):
             self.centralwidget = centralwidget
 
@@ -146,20 +147,22 @@ class Ui_MainWindow(object):
         def com_port(self, com):
 
             if com != "close":
-                self.ser = serial.Serial("COM" + str(com), timeout=3) # полключается сом порт по номеру из ввода
+                self.ser = serial.Serial("COM" + str(com), timeout=2) # полключается сом порт по номеру из ввода
                 self.name_comport = self.comboBox.currentText()
                 if self.ser.isOpen():
                     self.bt_on_com.setText("OPEN")
                     self.ser.write("HELLO".encode('utf-8'))# снести на основном проекте
                     print(f"abonent {self.name_comport} -- ", self.ser.readline().decode('utf-8')) #чтение ответа из ардуино
                     self.bt_off_com.setText("OFF")
-                    connections.COM_FlAG[self.name_comport] = ['open', self.ser]
+                    connections.COM_FlAG[self.name_comport] = [True, 'open', self.ser]
+
 
             else:
                 time.sleep(2)
                 self.ser.close()
                 self.bt_on_com.setText("ON")
                 self.bt_off_com.setText("CLOSE")
+
 
 
 def app(): # графический интерфей
