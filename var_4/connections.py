@@ -57,7 +57,7 @@ def client_to_com(client): #разовое обращение к портам
                     if COM_FlAG[data[0]][1].isOpen():
                         COM_FlAG[data[0]][1].write(data[1].encode('utf-8'))
                         ask = COM_FlAG[data[0]][1].readline().decode('utf-8')
-                        with sqlite3.connect('../var_3/data_base.db') as tabl:
+                        with sqlite3.connect('data_base.db') as tabl:
                             cursor = tabl.cursor()
                             zaps = (time.time(), data[1], ask)
                             cursor.execute(f'''INSERT INTO {data[0]} (time, in_com, out_com) VALUES (?, ?, ?)''', zaps)
@@ -72,15 +72,25 @@ def client_to_com(client): #разовое обращение к портам
         pass
 
 def loop(ser, com_name): # обращение к порту с зацикливанием
+    out_text = "0"
+    in_text = "0"
+
+    def write_table():
+        print('write table')
+        with sqlite3.connect('data_base.db') as tabl:
+            cursor = tabl.cursor()
+            zaps = (time.time(), in_text, out_text)
+            cursor.execute(f'''INSERT INTO {com_name} (time, in_com, out_com) VALUES (?, ?, ?)''', zaps)
+            tabl.commit()
     def send_loop():
         while COM_FlAG_loop[com_name][0] == 'message':
             time.sleep(0.5)
-        in_text = ''
+
         while COM_FlAG[com_name][0]:
             try:
-                #print (in_text, COM_FlAG_loop[com_name][0])
                 if in_text != COM_FlAG_loop[com_name][0]:
                     in_text = COM_FlAG_loop[com_name][0]
+                    write_table()
                 if ser.isOpen():
                     ser.write(in_text.encode())
             except:
@@ -89,17 +99,18 @@ def loop(ser, com_name): # обращение к порту с зациклив�
         return print('end sendloop')
 
     def read_loop():
+        global out_text, in_text
         while COM_FlAG_loop[com_name][0] == 'message':
             time.sleep(0.5)
 
-        out_text = ''
         while COM_FlAG[com_name][0]:
             if ser.read().decode('utf-8') == 'U':
                 out_text = "U" + ser.read(size = 30).decode('utf-8')
-                print(COM_FlAG_loop[com_name][1] , out_text)
+
                 if COM_FlAG_loop[com_name][1] != out_text:
                     COM_FlAG_loop[com_name][1] = out_text
 
+                    write_table()
             else:
                 pass
             time.sleep(0.1) # задержка при опросе ком порта
