@@ -45,6 +45,7 @@ def client_to_com(client): #разовое обращение к портам
 
         elif data[0] in COM_FlAG_loop:
             COM_FlAG_loop[data[0]][0] = data[1]
+            print ('client')
             time.sleep(0.2)
             client.send(COM_FlAG_loop[data[0]][1].encode('utf-8'))
         else:
@@ -77,6 +78,7 @@ def loop(ser, com_name): # обращение к порту с зациклив�
         in_text = ''
         while COM_FlAG[com_name][0]:
             try:
+                #print (in_text, COM_FlAG_loop[com_name][0])
                 if in_text != COM_FlAG_loop[com_name][0]:
                     in_text = COM_FlAG_loop[com_name][0]
                 if ser.isOpen():
@@ -84,26 +86,31 @@ def loop(ser, com_name): # обращение к порту с зациклив�
             except:
                 pass
             time.sleep(0.2)
+        return print('end sendloop')
 
     def read_loop():
         while COM_FlAG_loop[com_name][0] == 'message':
             time.sleep(0.5)
+
         out_text = ''
-        count = 0
         while COM_FlAG[com_name][0]:
             if ser.read().decode('utf-8') == 'U':
                 out_text = "U" + ser.read(size = 30).decode('utf-8')
+                print(COM_FlAG_loop[com_name][1] , out_text)
                 if COM_FlAG_loop[com_name][1] != out_text:
-                    count += 1
-                    COM_FlAG_loop[com_name][1] = out_text + str(count)
+                    COM_FlAG_loop[com_name][1] = out_text
 
             else:
-                   pass
+                pass
             time.sleep(0.1) # задержка при опросе ком порта
+
+        return print('end readloop')
+
     send_lo = threading.Thread(target= send_loop)
     read_lo = threading.Thread(target= read_loop)
     send_lo.start()
     read_lo.start()
+
 
 
 # блок управления сервером

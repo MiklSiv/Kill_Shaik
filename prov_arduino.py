@@ -18,12 +18,15 @@ def com_er():
     Flag = True
     while Flag:
         if ser.isOpen():
-            if ser.read().decode('utf-8') == 'U':
-                ask = "U" + ser.read(size = 31).decode('utf-8')
-                print (count,  ask)
-                count +=1
-                if count == 5:
-                    Flag = False
+            ser.write(text.encode('utf-8'))
+            while True:
+                if ser.read().decode('utf-8') == 'U':
+                    ask = "U" + ser.read(size = 31).decode('utf-8')
+                    print (count, ask)
+                    count +=1
+                    if count == 5:
+                        Flag = False
+                    break
             else:
                pass
 

@@ -115,20 +115,20 @@ class Ui_MainWindow(object):
             self.bt_loop.setObjectName("bt_off_com")
             self.bt_loop.setText("LOOP")
 
-            self.com_text = QtWidgets.QTextEdit(self.centralwidget)
-            self.com_text.setGeometry(QtCore.QRect(60, 45 + n, 40, 20))
+            self.com_number = QtWidgets.QTextEdit(self.centralwidget)
+            self.com_number.setGeometry(QtCore.QRect(60, 45 + n, 40, 20))
             font = QtGui.QFont()
             font.setPointSize(7)
-            self.com_text.setFont(font)
-            self.com_text.setObjectName("textEdit_2")
+            self.com_number.setFont(font)
+            self.com_number.setObjectName("textEdit_2")
 
-            self.com_name = QtWidgets.QLabel(self.centralwidget)
-            self.com_name.setGeometry(QtCore.QRect(249, 45 + n, 81, 22))
+            self.text_com_name = QtWidgets.QLabel(self.centralwidget)
+            self.text_com_name.setGeometry(QtCore.QRect(249, 45 + n, 81, 22))
             font = QtGui.QFont()
             font.setPointSize(7)
-            self.com_name.setFont(font)
-            self.com_name.setObjectName("textEdit_2")
-            self.com_name.setText(self.name_comport)
+            self.text_com_name.setFont(font)
+            self.text_com_name.setObjectName("textEdit_2")
+            self.text_com_name.setText(self.name_comport)
 
             self.label = QtWidgets.QLabel(self.centralwidget)
             self.label.setGeometry(QtCore.QRect(170, 20 + n, 41, 21))
@@ -153,9 +153,16 @@ class Ui_MainWindow(object):
             self.ser = ''
 
         def botton(self):
-            self.bt_on_com.clicked.connect(lambda: self.com_port(self.com_text.toPlainText()))
+            self.bt_on_com.clicked.connect(lambda: self.com_port(self.com_number.toPlainText()))
             self.bt_off_com.clicked.connect(lambda: self.com_port('close'))
-            self.bt_loop.clicked.connect(lambda: connections.loop(connections.COM_FlAG[self.name_comport][1], self.name_comport))
+            self.bt_loop.clicked.connect(lambda: self.Loop())
+
+
+        def Loop(self):
+            connections.loop(connections.COM_FlAG[self.name_comport][1], self.name_comport)
+            self.bt_loop.setStyleSheet("background-color: rgb(255, 255, 255);\n"
+                                         "background-color: rgb(0, 255, 127);")
+
 
         def com_port(self, com):
             if com != "close":
@@ -171,9 +178,9 @@ class Ui_MainWindow(object):
                 self.ser.close()
                 self.bt_on_com.setText("ON")
                 self.bt_off_com.setText("CLOSE")
-
-
-
+                self.bt_loop.setStyleSheet("background-color: rgb(255, 255, 127);\n"
+                                          "")
+                connections.COM_FlAG_loop[self.name_comport][0] = False
 
 def app(): # графический интерфей
     app = QtWidgets.QApplication(sys.argv)
